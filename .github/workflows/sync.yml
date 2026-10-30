@@ -2,7 +2,7 @@ name: Sync Forked Repositories
 
 on:
   schedule:
-    - cron: '17 * * * *'
+    - cron: '17 3 * * *'
   workflow_dispatch:
 
 jobs:
