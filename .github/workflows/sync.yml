@@ -1,0 +1,21 @@
+name: Sync Forked Repositories
+
+on:
+  #schedule:
+   # - cron: '17 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Tagged Forks
+        env:
+          # Authenticate using your Fine-Grained PAT
+          GH_TOKEN: ${{ secrets.SYNC_PAT }}
+        run: |
+          # Finds all forks in the org with the 'auto-sync' topic and syncs them
+          gh repo list CSI-Pacific --fork --topic auto-sync --limit 100 --json nameWithOwner --jq '.[].nameWithOwner' | while read -r repo; do
+            echo "Syncing $repo..."
+            gh repo sync "$repo" --force || echo "::warning::Failed to sync $repo"
+          done
